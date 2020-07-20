@@ -1,0 +1,10 @@
+# 数据源在这里不需要配置，只需要在service实现的地方配置就可以了
+
+#spring:
+#  # mysql 相关配置
+#  datasource:
+#    url: jdbc:mysql://192.168.206.130:3306/shop?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+##    url: jdbc:mysql://192.168.206.130:3306/shop
+#    username: root
+#    password: 123456
+#

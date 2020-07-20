@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" >
+
+</head>
+<body>
+    <div class="container-fluid">
+
+
+<!--        功能栏-->
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <button type="button" class="btn btn-primary" href="#"> 添加 </button>
+                <button type="button" class="btn btn-danger" href="#"> 删除 </button>
+            </div>
+        </div>
+
+<!--        内容页面-->
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <tr>
+
+                        <th> ID </th>
+                        <th> 商品类别 </th>
+                        <th> 商品名称 </th>
+                        <th> 商品价格 </th>
+                        <th> 商品卖点 </th>
+                        <th> 商品图片 </th>
+                        <th> 操作 </th>
+
+                    </tr>
+
+                    <tr th:each="goods_list : ${pageInfo.list}">
+
+                        <td th:text="${goods_list.id}">  </td>
+                        <td th:text="${goods_list.typeName}">  </td>
+                        <td th:text="${goods_list.name}">  </td>
+                        <td th:text="${goods_list.salePrice}">  </td>
+                        <td th:text="${goods_list.salePoint}">  </td>
+                        <td> <img src="" class="img-responsive" alt="图片丢失.. "> </td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" href="#"> 修改 </button>
+                            <button type="button" class="btn btn-danger btn-sm" href="#"> 删除 </button>
+                        </td>
+
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+<!--        分页-->
+        <div class="row">
+<!--            分页信息描述-->
+            <div class="col-md-6">
+                当前第<span th:text="${pageInfo.pageNum}" />页，
+                共<span th:text="${pageInfo.total}" />条记录，
+                共<span th:text="${pageInfo.pages}" />页
+            </div>
+<!--            分页工具栏-->
+            <div class="col-md-6">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li>
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li th:each="item: ${pageInfo.navigatepageNums}"
+                        th:class="${item == pageInfo.pageNum}?'active':''">
+                            <a th:href="|/goods/page/${item}/${pageInfo.pageSize}|" th:text="${item}"></a>
+                        </li>
+
+                        <li>
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" ></script>
+</body>
+</html>

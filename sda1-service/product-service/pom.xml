@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.dubbo.shop</groupId>
+    <artifactId>product-service</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+
+    <dependencies>
+        <!--spring boot 依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>2.0.5.RELEASE</version>
+        </dependency>
+
+        <!--spring boot 依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.0.5.RELEASE</version>
+        </dependency>
+
+        <!--        dubbo注解-->
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>0.2.0</version>
+        </dependency>
+
+            <!--        entity相关依赖-->
+            <dependency>
+                <groupId>com.dubbo.shop</groupId>
+                <artifactId>sda1-entity</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <!--        mapper相关依赖-->
+            <dependency>
+                <groupId>com.dubbo.shop</groupId>
+                <artifactId>sda1-mapper</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+
+<!--        service接口 api-->
+        <dependency>
+            <groupId>com.dubbo.shop</groupId>
+            <artifactId>product-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+</project>
