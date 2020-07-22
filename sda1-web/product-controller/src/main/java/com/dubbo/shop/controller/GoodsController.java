@@ -1,14 +1,15 @@
 package com.dubbo.shop.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dubbo.shop.entity.TGoodsBase;
 import com.dubbo.shop.service.ITGoodsBaseService;
+import com.dubbo.shop.vo.GoodsVO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -43,5 +44,13 @@ public class GoodsController {
         model.addAttribute("pageInfo", pageInfo);
 
         return "goods_list";
+    }
+
+    @PostMapping("add")
+    public String add(GoodsVO vo){
+
+        int goods_id = goodsBaseService.add(vo);
+
+        return "redirect:/goods/page/1/1";
     }
 }

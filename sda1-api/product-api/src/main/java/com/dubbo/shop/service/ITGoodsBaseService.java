@@ -3,6 +3,7 @@ package com.dubbo.shop.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dubbo.shop.entity.TGoodsBase;
+import com.dubbo.shop.vo.GoodsVO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -18,4 +19,7 @@ import java.util.List;
 public interface ITGoodsBaseService extends IService<TGoodsBase> {
 
     PageInfo<TGoodsBase> page(int index, int size);
+
+    int add(GoodsVO vo);
+
 }
