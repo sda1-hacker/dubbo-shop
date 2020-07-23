@@ -29,5 +29,8 @@ fdfs:
     height: 100
   tracker-list: 192.168.206.135:22122   # 跟踪器地址
 
+filePath:
+  service: http://192.168.206.135/
+
 
 

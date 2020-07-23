@@ -1,19 +1,28 @@
 package com.dubbo.shop.controller;
 
+import com.dubbo.shop.pojo.ResBean;
+import com.dubbo.shop.pojo.wangEditorBean;
 import com.github.tobato.fastdfs.domain.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("test")
+@RequestMapping("file")
 public class FastDFSDemo {  // 用于测试fastdfs
+
+    @Value("${filePath.service}")   // 获取application.yml中的值
+    private String base_url;
 
     @Autowired
     private FastFileStorageClient fastFileStorageClient;
@@ -56,8 +65,61 @@ public class FastDFSDemo {  // 用于测试fastdfs
     }
 
     @RequestMapping("uplodify")
-    public String uplodify(@RequestParam("img") MultipartFile file){
-        System.out.println(file);
-        return "success ~~~";
+    public ResBean uplodify(@RequestParam("img") MultipartFile file) throws Exception{
+        String file_name = file.getOriginalFilename();
+
+        String extName = file_name.substring(file_name.lastIndexOf(".") + 1);
+
+        InputStream inputStream = file.getInputStream();
+
+        StorePath storePath = fastFileStorageClient.uploadFile(inputStream, file.getSize(), extName, null);
+
+        String full_path = storePath.getFullPath();
+
+        // StringBuilder线程安全
+        String img_url = new StringBuilder(base_url).append(full_path).toString();
+        System.out.println(img_url);
+
+        return ResBean.success(img_url);
+    }
+
+
+    // 使用富文本编辑器上传多张图片
+    @RequestMapping("wangEditor_uplodify")
+    public wangEditorBean wangEditor_uplodify(@RequestParam("imgs") MultipartFile[] files) throws Exception{
+
+        List<String> images = new ArrayList<String>();
+        for(MultipartFile file: files){
+            String img_url = uploadFileUtil(file);
+            images.add(img_url);
+        }
+
+        return wangEditorBean.success(images);
+    }
+
+    public String uploadFileUtil(MultipartFile file) throws Exception{
+        String file_name = file.getOriginalFilename();
+
+        String extName = file_name.substring(file_name.lastIndexOf(".") + 1);
+
+        InputStream inputStream = file.getInputStream();
+
+        StorePath storePath = fastFileStorageClient.uploadFile(inputStream, file.getSize(), extName, null);
+
+        String full_path = storePath.getFullPath();
+
+        // StringBuilder线程安全
+        String img_url = new StringBuilder(base_url).append(full_path).toString();
+        System.out.println(img_url);
+
+        return img_url;
+    }
+
+
+    @RequestMapping("delete")
+    public String delete(String file_path){
+
+        fastFileStorageClient.deleteFile(file_path);
+        return null;
     }
 }
