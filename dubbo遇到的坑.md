@@ -201,3 +201,51 @@ var editor_content = editor.txt.html();  // 所有内容
 var editor_content = editor.txt.text();  // 只获取文本内容
 ```
 
+
+
+
+
+7.26号：
+
+商品分类：   id，pid，name			pid=0的为第一级分类
+
+方法一：定义Node类
+
+class Node {
+
+​	id；
+
+​	name；
+
+​	List<Node>
+
+}
+
+
+
+方法二：编写递归的sql
+
+
+
+方法三：直接获取分类的列表，在前端进行区分		 通常采用这种，减少递归，从而减轻数据库的压力
+
+​		 商品分类：   id，pid，name 
+
+​			向页面返回所有分类，list
+
+​		前台页面这样判断
+
+​		th:each="type_list : ${list}"    //一级分类
+
+​			th:each="son_type_list : ${list}"  th:if="${son_type_list.pid == type_list.id}"	// 二级分类的pid等于一级分类的id
+
+​				th:each="son_son_type_list : ${list}"  th:if="${son_son_type_list.pid == son_type_list.id}"// 三级分类的pid等于二级分类的id
+
+
+
+
+
+在做开发的时候优先减轻数据库的压力。 
+
+
+

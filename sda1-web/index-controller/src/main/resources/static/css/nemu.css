@@ -1,0 +1,72 @@
+nav {
+    height:50px;
+    width:850px;
+    background:#eee;
+    margin:0 auto;/*0 上下 auto 左右*/
+    margin-top: 50px;
+    margin-bottom:50px;
+}
+
+nav ul ul {
+    display: none;   /*该元素不会显示*/
+}
+
+nav ul li:hover > ul {   /* > 子菜单选择器 鼠标在li上的时候 改变子ul的display属性*/
+    display: block;
+}
+
+
+nav ul {
+    list-style: none;  /*所有的列表属性*/
+    position: relative; /*相对定位ul的位置*/
+
+}
+
+nav ul li {
+    width:250px;
+    height:50px;
+    float: left;  /*使竖向菜单变为横向菜单*/
+}
+
+nav ul li:hover {
+    background:#666;
+
+}
+nav ul li:hover a {
+    color: #fff;
+}
+
+nav ul li a {
+    display: block;  /*使a标签变成块状*/
+    padding: 10px 40px; /*a标签左右的距离*/
+    text-align:center;
+    color:#CCC;
+    text-decoration: none; /*文本的属性*/
+}
+
+
+nav ul ul {
+    background:#666;
+    border-radius: 0px; padding: 0;
+    position: absolute; /*定义子ul的位置*/
+    top: 100%;
+}
+nav ul ul li {
+    float: none;  /*清楚子ul里面li标签的浮动*/
+    border-top: 1px solid #6b727c; /*下拉菜单中的分割线*/
+    border-bottom: 1px solid #575f6a;
+    position: relative;
+}
+nav ul ul li a {
+    padding: 15px 40px;
+    color: #333;
+}
+nav ul ul li a:hover {
+    background: #333;
+}
+
+nav ul ul ul{
+    position: absolute;
+    left: 100%;
+    top:0;
+}

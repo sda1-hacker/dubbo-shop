@@ -1,0 +1,31 @@
+server:
+  port: 9002
+
+dubbo:
+  application:
+    name: consumer-index
+  registry:
+    protocol: zookeeper
+    address: 192.168.206.135:2181
+
+
+spring:
+  # mysql 相关配置
+  # 数据源配置，只需要在服务启动的工程中配置，也就是provider以及consumer中配置
+  datasource:
+    url: jdbc:mysql://192.168.206.135:3306/shop?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    #    url: jdbc:mysql://192.168.206.130:3306/shop
+    username: root
+    password: 123456
+
+  thymeleaf:
+    prefix: classpath:/template/
+    suffix: .html
+    encoding: UTF-8
+
+# 文件存储的服务器地址
+filePath:
+  service: http://192.168.206.135/
+
+
+
