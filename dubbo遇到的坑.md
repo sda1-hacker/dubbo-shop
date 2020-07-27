@@ -249,3 +249,269 @@ class Node {
 
 
 
+
+
+
+
+7.27号：
+
+swagger2    构建RESTful API 
+
+
+
+关于跨域问题：使用jsonp去解决【json padding   -- json填充】，原理是使用js的 src去访问，这样不会出现跨域   
+
+```html
+# 在定义call函数，供下面使用
+<script type="text/javascript">
+    function: call(data){
+    	console.log(data)
+	}
+</script>
+```
+
+   
+
+```html
+# 使用script标签的 src去向其他服务器发送一个请求，不会出现跨域的问题
+# 向后台传递的参数是callback,   callback是一个函数 ，在上面已经定义过了
+<script type="text/javascript" src="http://192.168.206.133:8080/getData?callback=call"></script>
+```
+
+
+
+```java
+# 后台代码
+    @GetMapping("list")
+    public String list(String callback){
+
+        List<TGoodsType> items = goodsTypeService.list();
+
+		// call(data) 就是上面定义的函数
+        return callback + "(" + items.toJson() + ")";
+	}
+```
+
+
+
+ajax使用jsonp
+
+```html
+// 在ajax中使用的函数
+<script type="text/javascript">
+    function: call(data){
+    	console.log(data)
+	}
+</script>
+```
+
+
+
+```javascript
+$(function(){
+	$.ajax({
+        url: "http://192.168.206.133:8080/getData?callback=call",
+        dataType: "jsonp" // 使用jsonp处理跨域
+        jsonpCallback: "call" // jsonp使用上面定义的函数，函数名要一致
+    })
+})
+```
+
+
+
+```Java
+// 后台代码
+@GetMapping("list")
+public String list(String callback){
+
+    List<TGoodsType> items = goodsTypeService.list();
+
+	// call(data) 就是上面定义的函数
+    return callback + "(" + items.toJson() + ")";
+}
+```
+
+
+
+索引失效：
+
+1、select * from t_user where name like '%sd%';
+
+这种会导致索引的失效，
+
+2、select * from t_user where name like 'sd%';
+
+这种不会导致索引失效，（有参照依据）
+
+
+
+mysql 5.6之后提供了全文索引，保证了分词（华为手机-->华为、手机）和性能 （like 'sd%'）,使用了全文索引，压力仍然在sql服务器上。
+
+
+
+采用成熟的搜索引擎技术来代替数据库【索引库】，solr（Apache）、es（elasticSearch-大数据分析）
+
+应用程序 ----(搜索)---> 索引库【可以做集群，减轻压力】（solr、es）<----(数据同步)---数据库
+
+适用于站内搜索
+
+
+
+
+
+
+
+安装solr：
+
+jdk 1.8、tomcat
+
+wget http://archive.apache.org/dist/lucene/solr/4.10.4/solr-4.10.4.tgz
+
+tar -zxvf solr-4.10.4.tgz 
+
+
+
+solr-4.10.4/dist/  包含了一个连通tomcat和solrhome的可运行war包 
+
+solr-core：独立提供搜索服务的单位，在一个solr-home中可以有多个solr-core
+
+程序 ------->tomcat（solr.war）------->solr-home，数据库的数据要导入给某个具体的solr-core
+
+
+
+/solr-4.10.4/example/solr/：是一个标准的solr-home，包含了一个solr-core（collection1）
+
+
+
+cd /solr-4.10.4/example/
+
+cp -r solr /usr/local/solr-home
+
+cp /solr-4.10.4/dist/solr-4.10.4.war  /usr/local/tomcat/webapps/
+
+启动tomcat
+
+cd /usr/local/tomcat/webapps/
+
+mv solr-4.10.4  solr
+
+
+
+# 添加扩展日志
+
+cd /solr/WEB-INF
+
+mkdir classes     //存放配置文件的目录
+
+cp /solr-4.10.4/example/lib/ext/*  /usr/local/tomcat/webapps/solr/WEB-INF/lib/
+
+cp /solr-4.10.4/example/resources/log4j.properties  /usr/local/tomcat/webapps/solr/WEB-INF/classes/
+
+
+
+# 加载solr-home
+
+vim /usr/local/tomcat/webapps/solr/WEB-INF/web.xml
+
+<env-entry>  41行
+
+​	<env-entry-name>solr/home</env-entry-name> 
+
+​	<env-entry-value>/usr/local/solr-home/</env-entry-value> 
+
+​	<env-entry-type>java.lang.String</env-entry-type> 
+
+</env-entry>
+
+
+
+重启tomcat
+
+访问： http://192.168.206.135:8080/solr/
+
+
+
+
+
+![1595818690466](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1595818690466.png)
+
+![1595818737227](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1595818737227.png)
+
+这个分词器对中文不敏感。需要安装中文分词器（使用IKAnalyzer）[]
+
+git clone https://gitee.com/wltea/IK-Analyzer-2012FF.git
+
+cp /IK-Analyzer-2012FF/distIKAnalyzer2012FF_u1.jar /usr/local/tomcat/webapps/solr/WEB-INF/lib/
+
+cp /IK-Analyzer-2012FF/dist/IKAnalyzer.cfg.xml stopword.dic /usr/local/tomcat/webapps/solr/WEB-INF/classes/				# xxx.dic表示词典，用户可以通过修改IKAnalyzer.cfg.xml配置自定义词典
+
+
+
+# 在solr-core中使用中文分词器
+
+vim /usr/local/solr-home/collection1/conf/schema.xml
+
+在文件末尾添加
+
+<fieldType name="text_ik" class="solr.TextField">	# name可以自定义，分词器名称
+                <analyzer class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+</fieldType>
+
+重启tomcat
+
+
+
+![1595822011181](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1595822011181.png)
+
+
+
+将数据库上的数据同步到solr上：
+
+需要再solr中定义字段，和mylsq进行映射，但是solr->mysql不一定要完全映射，这个是根据需求来分析的。solr只提供搜索需要返回的字段，没有必要完全返回。点击对应的信息才显示详情。
+
+
+
+1、自定义域（solr-->mysql的映射）  
+
+vim /usr/local/solr-home/collection1/conf/schema.xml   【添加到文件最后】
+
+// name：自定义字段名，type：指定分词器，indexed：是否可以按照这个字段搜索，stored：存储，这一部分是搜索的时候返回的字段
+
+<field name="goods_name" type="text_ik" indexed="true" stored="true" />
+
+<field name="goods_price" type="int" indexed="true" stored="true" />
+
+<field name="goods_sale_point" type="text_ik" indexed="true" stored="true" />
+
+<field name="goods_img" type="string" indexed="false" stored="true" />
+
+
+
+// 目标域		multiValue：符合字段，会按照目标域进行搜索。相当于（or）
+
+<field name="goods_keywords" type="text_ik" indexed="true" stored="true" multiValued="true"/>
+
+
+
+// 将自定义域放在目标域中
+
+<copyField source="goods_name" dest="goods_keywords"/>
+
+<copyField source="goods_sale_point" dest="goods_keywords"/>
+
+
+
+
+
+# springboot整合solr
+
+底层使用的是spring-data-solr
+
+
+
+
+
+# 数据库的数据全量复制到索引库（solr）
+
+
+
