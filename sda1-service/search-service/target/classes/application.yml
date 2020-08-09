@@ -6,17 +6,17 @@ dubbo:
     name: provider-search   # 服务名称
   registry: # 注册中心
     protocol: zookeeper
-    address: 192.168.206.135:2181
+    address: baseCentos:2181
   protocol: # 服务端口
     port: 28800
 
 spring:
   data:
     solr:
-      host: http://192.168.206.135:8080/solr  # 单机版solr配置
+      host: http://baseCentos:8080/solr  # 单机版solr配置
   # mysql
   datasource:
-    url: jdbc:mysql://192.168.206.135:3306/shop?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:mysql://baseCentos:3306/shop?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     #    url: jdbc:mysql://192.168.206.130:3306/shop
     username: root
     password: 123456

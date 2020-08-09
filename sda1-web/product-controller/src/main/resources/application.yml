@@ -6,14 +6,14 @@ dubbo:
     name: consumer-product
   registry:
     protocol: zookeeper
-    address: 192.168.206.135:2181
+    address: baseCentos:2181
 
 
 spring:
   # mysql 相关配置
   # 数据源配置，只需要在服务启动的工程中配置，也就是provider以及consumer中配置
   datasource:
-    url: jdbc:mysql://192.168.206.135:3306/shop?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:mysql://baseCentos:3306/shop?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     #    url: jdbc:mysql://192.168.206.130:3306/shop
     username: root
     password: 123456
@@ -27,10 +27,10 @@ fdfs:
   thumb-image:  # 缩略图
     width: 100
     height: 100
-  tracker-list: 192.168.206.135:22122   # 跟踪器地址
+  tracker-list: baseCentos:22122   # 跟踪器地址
 
 filePath:
-  service: http://192.168.206.135/
+  service: http://baseCentos/
 
 
 

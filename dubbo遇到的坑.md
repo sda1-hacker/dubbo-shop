@@ -515,3 +515,85 @@ vim /usr/local/solr-home/collection1/conf/schema.xml   【添加到文件最后�
 
 
 
+从git或者svn上拉去的项目，文件不是module
+
+参考： https://www.csdn.net/gather_2e/MtjaIgwsOTU4NjctYmxvZwO0O0OO0O0O.html
+
+
+
+# solr原理：
+
+​	正向索引：文档-->关键字	
+
+​	反向索引：关键字-->文档列表
+
+​		分词之后为每个词形成一个反向索引。
+
+
+
+# 多个solr-core：
+
+​	一个solr-core对应一个搜索服务
+
+​	cd /usr/local/solr-home
+
+​	cp -r collection1 	collection2
+
+​	
+
+​	修改solr-core名称					这个名称在java程序中需要使用到，
+
+​	vim /usr/local/solr-home/collection2/core.properties
+
+​	name 修改为 collection2
+
+​	
+
+​	修改配置文件  -- 自定义域
+
+​	vim /usr/local/solr-home/collection2/conf/schema.xml 
+
+
+
+​	删除data
+
+​	
+
+​	之后重启tomcat就可以了
+
+
+
+​	添加时指定对应的collection：	（core.properties中定义的collection的名称）
+
+```java
+//        solrClient.add("collection2", document);  // 指定添加到collection2
+//        solrClient.commit("collection2");     // 指定提交到collection2
+```
+
+
+
+​	查询时指定对应的collection：	（core.properties中定义的collection的名称）
+
+```java
+//        QueryResponse response1 = solrClient.query("collection2",condition);    // 从指定的collection中查询
+```
+
+
+
+
+
+# solr 集群架构（solr-cloud）
+
+​	多台服务器提供一个搜索服务。
+
+​	通过zookeeper管控solr集群，作为集群的入口，也可以对配置文件进行统一的管理。
+
+​	访问结构：			client --->zookeeper（集群）--->solr集群
+
+
+
+# 数据同步：增量复制
+
+​	初始化的时候做全量复制
+
+​	之后做增量复制。
