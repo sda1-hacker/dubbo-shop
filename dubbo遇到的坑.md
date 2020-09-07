@@ -74,7 +74,6 @@ thymeleaf模板引擎踩坑 -- 需要在th:href="|xxxx|"  加这个竖线
 
 
 
-
 7.21号
 使用mybatis plus 在设置了主键（id）自增之后，调用insert方法将数据添加到数据库中之后，会将entity的id自动补上【 主键回填 -- 百度mybatis plus主键回填 】，调用entity.getID()就可以获得
 
@@ -596,4 +595,28 @@ vim /usr/local/solr-home/collection1/conf/schema.xml   【添加到文件最后�
 
 ​	初始化的时候做全量复制
 
-​	之后做增量复制。
+​	之后做增量复制。---》 在新增、修改、删除的时候同时也对solr中的数据进行同步。
+
+​	新增时，直接将添加后的entity传递给solr的添加服务这样会出现id找不到的情况【即使mybatis plus实现了主键自动回填，id也无法直接传递过去，因为是跨jvm的操作】。
+
+1、使用mybatis plus 主键会自动回填，将id传递给solr的添加服务，根据id查询对应的entity，然后进行添加。 2、或者是根据回填的id，重新查找对应entity然后传递给solr服务。
+
+
+
+
+
+# 商品详情页方案：
+
+​	方案1：动态页面的方式，根据查找的id不同，页面的内容也不同。	id -->mapper -->jsp -->java -->class -->tomcat-->展示商品信息。（与数据库的交互次数比较多）
+
+​	方案2：静态页面的方式，提前生成一系列静态页面。浏览器-->nginx-->静态页面
+
+
+
+​	落地方案：
+
+​			1、生成静态页面（使用freemarker）
+
+​			2、将静态页面部署到nginx上
+
+​			3、后续维护，性能
