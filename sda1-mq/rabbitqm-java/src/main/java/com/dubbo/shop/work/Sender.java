@@ -1,8 +1,15 @@
-package com.dubbo.shop.spimle;
+package com.dubbo.shop.work;
 
 // rabbitmq生产者消费者模式
 
-// 一个生产者一个消费者
+// 一个生产者 多个消费者
+// 多个消费者之间是竞争关系。
+// 消息会依次发送给每一个消费者。每个消费者得到的消息数目（基本上）是相等的。
+// 如果有的消费者处理的速度比较慢，那么这样就不是很合理
+
+// 针对上述的描述，就需要进行限流。  -- 就是消费者在没有处理完消息之前不会接受到新的消息
+// 使用在消费者那边添加如下代码：   表示每次接受一个消息，在没有处理完之前不会再接受新的消息了
+// channel.basicQos(1);
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -14,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 // 生产者
 public class Sender {
 
-    private static final String QUEUE_NAME = "simple";
+    private static final String QUEUE_NAME = "work";
 
     public static void main(String[] args) throws IOException, TimeoutException {
         // 1. 连接到rabbitmq服务器
@@ -39,10 +46,15 @@ public class Sender {
         channel.queueDeclare(QUEUE_NAME, true , false, false, null);
 
         // 3. 发送消息
-        String msg = "使用rabbitmq发送消息";
-        // 交换机，队列，null， 字节数组
-        channel.basicPublish("", QUEUE_NAME, null, msg.getBytes());
+        for(int i=1; i<=10; i++){
+
+            String msg = "使用rabbitmq发送消息:" + i + "..";
+            // 交换机，队列，null， 字节数组
+            channel.basicPublish("", QUEUE_NAME, null, msg.getBytes());
+        }
         System.out.println("发送成功");
+        System.exit(0);
+
     }
 
 }
