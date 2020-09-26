@@ -620,3 +620,110 @@ vim /usr/local/solr-home/collection1/conf/schema.xml   【添加到文件最后�
 ​			2、将静态页面部署到nginx上
 
 ​			3、后续维护，性能
+
+
+
+
+
+# 异步
+
+
+
+安装RabbitMQ：基于erlang编写的(erlang 和 rabbitmq版本有对应，不能随便乱搞，版本对应： https://www.rabbitmq.com/which-erlang.html )，  
+
+​	
+
+（脚本来自这里： https://www.cnblogs.com/Choleen/p/12409912.html ）
+
+​	1：安装erlang环境：
+
+​		curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash 	安装erlang依赖的脚本：
+
+​		
+
+​		相关依赖：
+
+		[rabbitmq_erlang]
+	    name=rabbitmq_erlang
+	    baseurl=https://packagecloud.io/rabbitmq/erlang/el/7/$basearch
+	    repo_gpgcheck=1
+	    gpgcheck=0
+	    enabled=1
+	    gpgkey=https://packagecloud.io/rabbitmq/erlang/gpgkey
+	    sslverify=1
+	    sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+	    metadata_expire=300
+	
+	    [rabbitmq_erlang-source]
+	    name=rabbitmq_erlang-source
+	    baseurl=https://packagecloud.io/rabbitmq/erlang/el/7/SRPMS
+	    repo_gpgcheck=1
+	    gpgcheck=0
+	    enabled=1
+	    gpgkey=https://packagecloud.io/rabbitmq/erlang/gpgkey
+	    sslverify=1
+	    sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+	    metadata_expire=300
+
+​		yum -y install erlang
+
+​	2：安装rabbitmq：
+
+​		curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash		安装rabbitmq依赖的脚本
+
+
+
+	[rabbitmq_rabbitmq-server]
+	name=rabbitmq_rabbitmq-server
+	baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/$basearch
+	repo_gpgcheck=1
+	gpgcheck=0
+	enabled=1
+	gpgkey=https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
+	sslverify=1
+	sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+	metadata_expire=300
+	
+	[rabbitmq_rabbitmq-server-source]
+	name=rabbitmq_rabbitmq-server-source
+	baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/SRPMS
+	repo_gpgcheck=1
+	gpgcheck=0
+	enabled=1
+	gpgkey=https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
+	sslverify=1
+	sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+	metadata_expire=300
+
+
+​		yum -y install rabbitmq-server.noarch
+
+​		service rabbitmq-server start	# 启动服务	systemctl start rabbitmq-server
+
+​	3：配置用户信息，允许远程访问
+
+​		cp /usr/share/doc/rabbitmq-server-3.8.8/rabbitmq.config.example /etc/rabbitmq/rabbitmq.config    可能不需要这一步
+
+​		vim /etc/rabbitmq/rabbitmq.config
+
+​		![1600011724602](C:\Users\86150\AppData\Roaming\Typora\typora-user-images\1600011724602.png)
+
+​		改为：（去掉%% 和 后面的 ，）
+
+​		![1600011757357](C:\Users\86150\AppData\Roaming\Typora\typora-user-images\1600011757357.png)
+
+​	4：开启页面管理工具（15672端口，java链接mq提供的是5672端口）
+
+​		rabbitmq-plugins enable rabbitmq_management
+
+​		http://192.168.157.128:15672	账号密码都是guest
+
+
+
+​	使用rabbitmq：
+
+​		总的来说有两种方式：点对点，发布-订阅（使用自定义交换机）
+
+​			点对点：	发送者 -- 队列 -- [消费者, 消费者 .. ]	消息依次分配给多个用户，可以通过限流的方式让消费者处理完一个消息之后再接受下一个消息
+
+​			发布订阅： 发送者 -- 交换机 -- [ [队列 -- 消费者]， [队列 -- 消费者] ..  ]		交换机只是负责转发消息，不负责存储消息，当没有队列的时候交换机会丢弃消息， 交换机会将消息转发到每个队列里面。
