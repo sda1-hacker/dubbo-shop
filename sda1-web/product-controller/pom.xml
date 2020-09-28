@@ -24,6 +24,13 @@
             <version>2.0.5.RELEASE</version>
         </dependency>
 
+        <!-- rabbitmq springboot相关依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <version>2.0.5.RELEASE</version>
+        </dependency>
+
         <!--        dubbo注解-->
         <dependency>
             <groupId>com.alibaba.boot</groupId>
