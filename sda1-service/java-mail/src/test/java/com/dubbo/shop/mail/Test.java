@@ -32,7 +32,7 @@ public class Test {
     @Value("${mail.fromAddress}")
     String fromAddress;
 
-    String toAddress = "xxxx@qq.com"
+    String toAddress = "xxxx@qq.com";
 
     // 发送简单的邮件
     @org.junit.Test
