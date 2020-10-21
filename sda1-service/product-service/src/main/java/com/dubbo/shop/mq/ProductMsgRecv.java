@@ -16,7 +16,7 @@ public class ProductMsgRecv {
     private TGoodsBaseMapper goodsBaseMapper;
 
     @RabbitListener(queues = "add_queue")
-    public void handle(TGoodsBase goods){
+    public void handle(TGoodsBase goods) {
         goodsBaseMapper.insert(goods);
     }
 

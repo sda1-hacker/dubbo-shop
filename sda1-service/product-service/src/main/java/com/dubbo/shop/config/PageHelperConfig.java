@@ -11,7 +11,7 @@ import java.util.Properties;
 public class PageHelperConfig {
 
     @Bean
-    public PageHelper getPageHelper(){
+    public PageHelper getPageHelper() {
         PageHelper pageHelper = new PageHelper();
 
         Properties properties = new Properties();

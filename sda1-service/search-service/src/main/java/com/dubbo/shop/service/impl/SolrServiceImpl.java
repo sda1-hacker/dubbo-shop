@@ -11,7 +11,7 @@ public class SolrServiceImpl implements SolrService {
     private SolrClient solrClient;
 
     @Override
-    public void add() throws Exception{
+    public void add() throws Exception {
         // solr里面的操作记录，document
         SolrInputDocument document = new SolrInputDocument();
 

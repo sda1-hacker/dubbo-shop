@@ -32,7 +32,7 @@ public class Test {
     private TGoodsBaseMapper goodsBaseMapper;
 
     @org.junit.Test
-    public void addTest() throws Exception{
+    public void addTest() throws Exception {
 
         // solr里面的操作记录  -- 也就是一条数据
         SolrInputDocument document = new SolrInputDocument();
@@ -55,7 +55,7 @@ public class Test {
 
 
     @org.junit.Test
-    public void queryTest() throws Exception{
+    public void queryTest() throws Exception {
         // 查询条件
         SolrQuery condition = new SolrQuery();
 //        condition.setQuery("*:*"); // 查询字符串
@@ -67,10 +67,10 @@ public class Test {
         // 查询结果
         SolrDocumentList results = response.getResults();
 
-        for (SolrDocument document : results){
+        for (SolrDocument document : results) {
             System.out.println(document.get("id") + ", " +
-            document.get("goods_name") + ", " +
-            document.get("goods_sale_point"));
+                    document.get("goods_name") + ", " +
+                    document.get("goods_sale_point"));
         }
     }
 
@@ -109,7 +109,7 @@ public class Test {
     }
 
     @org.junit.Test
-    public void deleteTest() throws Exception{
+    public void deleteTest() throws Exception {
         solrClient.deleteById("100");   // id是精确匹配
         solrClient.deleteByQuery("goods_name:林俊杰"); // 分词，匹配，删除
         solrClient.commit();
@@ -117,11 +117,11 @@ public class Test {
 
     // 将mysql中的数据，同步到solr中
     @org.junit.Test
-    public void syncAllData() throws Exception{
+    public void syncAllData() throws Exception {
 
         List<TGoodsBase> list = goodsBaseMapper.list();
 
-        for(TGoodsBase temp : list){
+        for (TGoodsBase temp : list) {
             SolrInputDocument document = new SolrInputDocument();
             document.setField("id", temp.getId());
             document.setField("goods_name", temp.getName());
@@ -134,7 +134,6 @@ public class Test {
         }
         solrClient.commit();
     }
-
 
 
 }
