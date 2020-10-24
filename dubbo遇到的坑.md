@@ -742,3 +742,52 @@ vim /usr/local/solr-home/collection1/conf/schema.xml   【添加到文件最后�
 
 ​	识别用户身份的唯一标识符（提前在服务器建立映射关系，  标识符 -> 用户id  [redis里面存储，  session.setAttrubute("标识符")]），  有时效性。
 
+
+
+
+
+ES6.7.2踩坑:
+
+​	虚拟机的核心数需要 》=2
+
+​	不能用root用户启动     --    老版本可以， 好像是 5.x以上就不行了
+
+​	useradd sda1
+
+​	passwd sda1
+
+​	groupadd sda1
+
+​	useradd sda1 -g sda1 
+
+​	tar -zxvf elasticsearch-6.7.2.tar.gz
+
+​	mv elasticsearch-6.7.2 /home/sda1/es
+
+​	chown -R sda1:sda1 /home/sda1/es/elasticsearch-6.7.2
+
+​	cd /home/sda1/es/elasticsearch-6.7.2/bin
+
+
+
+​	由于是在虚拟机上进行的配置，因此会有一些资源上的限制：
+
+​	 vim /etc/sysctl.conf     		 -- 追加如下内容
+
+​	 vm.max_map_count=262144 		 
+
+
+
+​	 vim  /etc/security/limits.conf 			-- 追加如下内容
+
+​	  \* soft nofile 65536 
+
+​	  \* hard nofile 65536 
+
+​	
+
+​	./elasticsearch -d 		# 后台运行
+
+
+
+​	整合spring boot还是使用 2.0.5.RELEASE，  使用2.2.1.RELEASE 会出错，不知道为啥。
