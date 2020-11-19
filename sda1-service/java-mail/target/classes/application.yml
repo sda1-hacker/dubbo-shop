@@ -1,0 +1,10 @@
+spring:
+  mail:
+    host: smtp.163.com      # smtp地址
+    username: t15501370295@163.com    # 邮箱账号
+    password: PYKBPUUOKRQMGFXV   # 发送邮件的认证密码  -- 在邮箱内部可以得到
+    default-encoding: UTF-8
+
+
+mail:
+  fromAddress: t15501370295@163.com     # 自定义邮件发送者的地址

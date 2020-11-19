@@ -1,14 +1,12 @@
 server:
-  port: 8001
+  port: 9999
 
 dubbo:
   application:
-    name: provider-product   # 服务名称
-  registry: # 注册中心
+    name: sso-controller
+  registry:
     protocol: zookeeper
     address: baseCentos:2181
-  protocol: # 服务端口
-    port: 28800
 
 
 spring:
@@ -20,11 +18,9 @@ spring:
     username: root
     password: 123456
 
-  # spring boot rabbitmq 相关配置
-  rabbitmq:
-    host: 192.168.157.128
-    port: 5672
-    username: sda1
-    password: 123456
-    virtual-host: sda1_mq
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+
 

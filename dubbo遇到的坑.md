@@ -791,3 +791,76 @@ ES6.7.2踩坑:
 
 
 ​	整合spring boot还是使用 2.0.5.RELEASE，  使用2.2.1.RELEASE 会出错，不知道为啥。
+
+
+
+
+
+分布式锁：
+
+​	zookeeper，redis，都可以实现， 为了解决分布式系统之间的资源调用问题。
+
+
+
+Redis相关：
+
+redis远程访问： 修改配置文件的bind  改为  0.0.0.0
+
+redis后台运行：修改配置文件的 daemonize yes		然后 redis-server /etc/redis/6379.conf
+
+事务：multi - exec       multi 之后 的命令表示在一个事务里面， 通过exec提交事务
+
+流水线：批量导入数据的时候，减少与redis交互的时间，从而提高效率
+
+
+
+
+
+redis实战策略：
+
+​	短信验证码：
+
+​				生成逻辑：	电话做key， 验证码做value，设置过期时间，然后存储到redis中
+
+​				后台逻辑：    输入电话，得到redis中对应的验证码，然后和输入的验证码进行对比，最后删除redis中对应的数据
+
+
+
+​	邮箱激活（用户已经注册成功）： 发送激活链接，http://xxxxx/active?activeCode=abcdef1223456, 进入到这个链接中点击激活
+
+​				生成逻辑：	activeCode作为key（个人习惯使用UUID）， 用户的id，作为value， 设置过期时间，存储到redis中，然后拼接url将activeCode传递过去。
+
+​				后台逻辑：	http://xxxxx/active对应一个函数，在这函数中获取activeCode，然后在redis中获取对应的用户id，然后修改id对应用户的状态，然后删除redis对应的数据
+
+​		
+
+
+
+关于redis做缓存 --- https://www.cnblogs.com/llaq/p/9470055.html 这篇写的很好。
+
+
+
+
+
+分布式session解决方案：
+
+​	cookie + redis  代替  cookie + session
+
+​	服务器会自动写一个cookie 发送到 客户端(sessionID, )
+
+
+
+关于分布式锁：
+
+​	
+
+
+
+
+
+单点登录：
+
+​	有多个系统的时候，希望用户在任意一个系统进行登录操作跳转到其他系统的时候都处于登录状态。---单点登录系统（一个单独的登录系统），由这个系统来实现登录相关的操作（展示登录页面，登录认证，凭证认证，注销等等） 
+
+​				
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dubbo.shop.mapper.TUserMapper">
+
+    <sql id="T_User_Column_List">  <!-- 数据库表字段 -->
+        id, userName, password, realName, flag, status, address, tel, email, email
+    </sql>
+
+    <select id="findUserByUserName" parameterType="java.lang.String" resultType="com.dubbo.shop.entity.TUser">
+
+        select 
+        <include refid="T_User_Column_List"></include>  <!-- 相当于 select * -->
+        from t_user where 1 = 1
+        and userName = #{userName, jdbcType=VARCHAR}
+
+    </select>
+
+
+</mapper>

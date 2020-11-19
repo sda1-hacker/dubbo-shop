@@ -12,6 +12,9 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.Index;
 import org.junit.runner.RunWith;
+import org.nlpcn.es4sql.SearchDao;
+import org.nlpcn.es4sql.query.SqlElasticDeleteByQueryRequestBuilder;
+import org.nlpcn.es4sql.query.SqlElasticSearchRequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,6 +30,9 @@ public class Test {
 
     @Autowired
     TransportClient client;
+
+    @Autowired
+    SearchDao searchDao;
 
     // 创建索引，并添加内容
     @org.junit.Test
@@ -91,8 +97,21 @@ public class Test {
 
     @org.junit.Test
     public void queryData(){
-        GetResponse response = client.prepareGet("person_index", "person_type", "*").get();
+        GetResponse response = client.prepareGet("person_index", "person_type", "2").get();
         System.out.println(response.getSourceAsString());
         
+    }
+
+    @org.junit.Test
+    public void es_SQL_Test() throws Exception{
+//        SearchDao searchDao = new SearchDao(client);
+        String sql = "select * from person_index where 1 = 1 and tel = 15777555555";
+        SqlElasticSearchRequestBuilder select = (SqlElasticSearchRequestBuilder)searchDao
+                .explain(sql)
+                .explain();
+
+        Map res = (Map) JSON.parse((select.get()).toString());
+
+        System.out.println(res);
     }
 }
