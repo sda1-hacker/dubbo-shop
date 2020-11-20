@@ -38,7 +38,8 @@ public class AuthIntercepter implements HandlerInterceptor {
                 }
             }
         }
-
+        // 在这里可以实现重定向，可以将没有登录的用户重定向到登录页面
+        // response.sendRedirect("xxxx");
         return true;
     }
 }
