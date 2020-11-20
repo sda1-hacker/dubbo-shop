@@ -45,8 +45,8 @@ public class TUserController {
 
         // 思路： 从某个页面跳转到登录页面的时候会拿到Referer, 将Referer从登录页面传递到 登录的函数中，在函数中返回到对应的页面
 
-        String referer = request.getHeader("Referer");
-        request.setAttribute("Referer", referer); // 传递到前台登录页面  --  前台可以 <input type="hidden" name="Referer" value="{{Referer}}"> 获取
+        // String referer = request.getHeader("Referer");
+        // request.setAttribute("Referer", referer); // 传递到前台登录页面  --  前台可以 <input type="hidden" name="Referer" value="{{Referer}}"> 获取
 
         // ---
 
@@ -55,13 +55,15 @@ public class TUserController {
 
     // 登录  -- 使用redis代替session来存储用户信息  -- 到登录系统中去登录
     @PostMapping("checkLogin")
-    public String checkLogin(String userName, String password, HttpServletResponse response,
+    @ResponseBody
+    public ResBean checkLogin(String userName, String password, HttpServletResponse response,
                              HttpServletRequest request){
 
         TUser currUser = userService.checkLogin(userName, password);
+        System.out.println(currUser + "------");
 
-        if(currUser != null){
-            return "ssoIndexPage";
+        if(currUser == null){
+            return ResBean.error("用户不存在，登录失败");
         }
 
         // 生成token
@@ -85,6 +87,7 @@ public class TUserController {
         // 将cookie返回给前端
         response.addCookie(cookie);
 
+        /*
         String backUrl = request.getParameter("Referer"); // 获取到Referer
         if(!"".equals(backUrl) && backUrl != null){
             return "redirect" + backUrl; // 重定向到这个url
@@ -92,6 +95,10 @@ public class TUserController {
         else {
             return "ssoIndexPage";
         }
+         */
+
+        return ResBean.success(currUser.getUsername());
+
     }
 
 
@@ -148,6 +155,23 @@ public class TUserController {
         return ResBean.error("用户未登录!!");
     }
 
+    // 将验证逻辑封装在service中
+    @ResponseBody
+    @GetMapping("checkIsLoginNewNew")
+    public ResBean checkIsLoginNewNew(@CookieValue(name = "user_token", required = false) String uuid){
+        if(uuid == null || "".equals(uuid)){
+            return ResBean.error("用户未登录");
+        }
+
+        TUser currUser = userService.checkIsLogin(uuid);
+
+        if(currUser == null){
+            return ResBean.error("用户未登录");
+        }
+
+        return ResBean.success(currUser.getUsername());
+    }
+
     // 注销  --  到登录系统中注销
     @GetMapping("logout")
     @ResponseBody
@@ -175,6 +199,20 @@ public class TUserController {
         }
 
         return ResBean.error("注销失败!!");
+    }
+
+    // 验证拦截器
+    @GetMapping("toIndexTest")
+    public String toIndexTest(HttpServletRequest request){
+
+        // 在拦截器中已经存放user
+        TUser currUser = (TUser) request.getAttribute("user");
+        System.out.println(currUser + "--------");
+        if(currUser != null){
+            return "indexPage";
+        }
+
+        return "error";
     }
 
 }

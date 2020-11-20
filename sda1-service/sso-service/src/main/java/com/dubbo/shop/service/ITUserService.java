@@ -14,4 +14,6 @@ import com.dubbo.shop.entity.TUser;
 public interface ITUserService extends IService<TUser> {
 
     TUser checkLogin(String userName, String password);
+
+    TUser checkIsLogin(String userToken);
 }

@@ -802,6 +802,20 @@ ES6.7.2踩坑:
 
 
 
+
+
+关于分布式锁：
+
+​	乐观锁：   表中有一个version的字段作为凭证，每次更新这条记录都要将version+1，是否可以执行更新操作的依据是--version没有变更。
+
+​		两个步骤（在一个事务内）：  1.  获取version，   String old_version = select version from t_goods where id = 1;
+
+​							  2.  执行更新并且将version+1，	    update t_goods set price=999, version=version+1 where id = 1 and version = #{old_version};
+
+
+
+
+
 Redis相关：
 
 redis远程访问： 修改配置文件的bind  改为  0.0.0.0
@@ -850,12 +864,6 @@ redis实战策略：
 
 
 
-关于分布式锁：
-
-​	
-
-
-
 
 
 单点登录：
@@ -863,4 +871,3 @@ redis实战策略：
 ​	有多个系统的时候，希望用户在任意一个系统进行登录操作跳转到其他系统的时候都处于登录状态。---单点登录系统（一个单独的登录系统），由这个系统来实现登录相关的操作（展示登录页面，登录认证，凭证认证，注销等等） 
 
 ​				
-
