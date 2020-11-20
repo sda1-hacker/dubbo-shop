@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -37,20 +36,32 @@ public class TUserController {
 
     // 展示登录页面
     @GetMapping("showSsoIndexPage")
-    public String shoSsoIndexPage(){
+    public String shoSsoIndexPage(HttpServletRequest request){
+
+        // ---
+        // 实现从某个页面跳转到登录页，登录完毕之后再返回到那个页面
+
+        // 获取到 Referer  --  从哪个url跳转到当前页面的url
+
+        // 思路： 从某个页面跳转到登录页面的时候会拿到Referer, 将Referer从登录页面传递到 登录的函数中，在函数中返回到对应的页面
+
+        String referer = request.getHeader("Referer");
+        request.setAttribute("Referer", referer); // 传递到前台登录页面  --  前台可以 <input type="hidden" name="Referer" value="{{Referer}}"> 获取
+
+        // ---
 
         return "ssoIndexPage";
     }
 
-    // 权限验证 -- 登录  -- 使用redis代替session来存储用户信息  -- 到登录系统中去登录
-    @ResponseBody
+    // 登录  -- 使用redis代替session来存储用户信息  -- 到登录系统中去登录
     @PostMapping("checkLogin")
-    public String checkLogin(String userName, String password, HttpServletResponse response){
+    public String checkLogin(String userName, String password, HttpServletResponse response,
+                             HttpServletRequest request){
 
         TUser currUser = userService.checkLogin(userName, password);
 
         if(currUser != null){
-            return "login Success!!";
+            return "ssoIndexPage";
         }
 
         // 生成token
@@ -74,7 +85,13 @@ public class TUserController {
         // 将cookie返回给前端
         response.addCookie(cookie);
 
-        return  "login failed";
+        String backUrl = request.getParameter("Referer"); // 获取到Referer
+        if(!"".equals(backUrl) && backUrl != null){
+            return "redirect" + backUrl; // 重定向到这个url
+        }
+        else {
+            return "ssoIndexPage";
+        }
     }
 
 
@@ -104,7 +121,7 @@ public class TUserController {
 
         return ResBean.error("未登录!!");
     }
-     */
+    */
 
     // 判断是否已经登录， 使用@CookieValue注解的方式  --  自动获取指定名字的cookie 的 value
     @PostMapping("checkIsLoginNew")
@@ -159,4 +176,5 @@ public class TUserController {
 
         return ResBean.error("注销失败!!");
     }
+
 }
